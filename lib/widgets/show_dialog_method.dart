@@ -1,7 +1,7 @@
 
   import 'package:flutter/material.dart';
 
-Future<dynamic> showDialogMethod(BuildContext context) {
+Future<dynamic> showDialogMethod(BuildContext context , {required String title , required String content}) {
     return showDialog(
                 context: context,
                 builder: (context) {
@@ -9,11 +9,11 @@ Future<dynamic> showDialogMethod(BuildContext context) {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    title: const Text("إضافة مجموعة"),
+                    title:  Text(title),
 
                     content: TextField(
                       decoration: InputDecoration(
-                        hintText: "اسم المجموعة",
+                        hintText: content,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),

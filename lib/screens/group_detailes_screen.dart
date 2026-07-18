@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:sajilni/data/student_data_model.dart';
 import 'package:sajilni/theme/app_colors.dart';
 import 'package:sajilni/widgets/glass_card.dart';
-import 'package:sajilni/widgets/primary_buttom.dart';
 import 'package:sajilni/widgets/show_dialog_method.dart';
 
 class GroupDetailesScreen extends StatelessWidget {
-  const GroupDetailesScreen({super.key});
-
+  const GroupDetailesScreen({
+    super.key,
+    required this.studentData,
+    required this.groupName,
+  });
+  final List<StudentData> studentData;
+  final String groupName;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,36 +26,53 @@ class GroupDetailesScreen extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: PrimaryButton(
-        color: AppColors.primary,
-        label: 'اضافة طالب جديد',
-        icon: Icons.add,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: AppColors.primary,
+        child: const Icon(Icons.add),
         onPressed: () {
-          showDialogMethod(context);
+          showDialogMethod(
+            context,
+            title: 'اضافة طالب',
+            content: 'ادخل اسم الطالب',
+          );
         },
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           spacing: 12,
           children: [
             const SizedBox(height: 12),
-
-            Text(
-              "الطلاب الموجودين في هذه المجموعة ",
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+            Column(
+              children: [
+                Text(
+                  "الطلاب الموجودين في",
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  groupName,
+                  style: const TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            StudentInfo(name: 'mando', id: '01233333', groupName: 'A'),
-
-            StudentInfo(name: 'muller', id: '01233333', groupName: 'A'),
-
-            StudentInfo(name: 'marvel', id: '01233333', groupName: 'A'),
-
-            StudentInfo(name: 'ashraf', id: '01233333', groupName: 'A'),
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              itemCount: studentData.length,
+              itemBuilder: (context, index) {
+                return StudentInfo(studentData: studentData[index]);
+              },
+            ),
           ],
         ),
       ),
@@ -59,15 +81,8 @@ class GroupDetailesScreen extends StatelessWidget {
 }
 
 class StudentInfo extends StatelessWidget {
-  const StudentInfo({
-    super.key,
-    required this.name,
-    required this.id,
-    required this.groupName,
-  });
-  final String name;
-  final String id;
-  final String groupName;
+  const StudentInfo({super.key, required this.studentData});
+  final StudentData studentData;
   @override
   Widget build(BuildContext context) {
     return GlassCard(
@@ -100,11 +115,11 @@ class StudentInfo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  name,
+                  studentData.name,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Row(
-                  children: const [
+                  children: [
                     Icon(
                       Icons.fingerprint,
                       size: 14,
@@ -112,13 +127,13 @@ class StudentInfo extends StatelessWidget {
                     ),
                     SizedBox(width: 4),
                     Text(
-                      "01233333",
+                      studentData.id,
                       style: TextStyle(color: AppColors.textSecondary),
                     ),
                   ],
                 ),
                 Row(
-                  children: const [
+                  children: [
                     Icon(
                       Icons.school_outlined,
                       size: 14,
@@ -126,7 +141,7 @@ class StudentInfo extends StatelessWidget {
                     ),
                     SizedBox(width: 4),
                     Text(
-                      'الصف العاشر - المجموعة أ',
+                      studentData.cityName,
                       style: TextStyle(color: AppColors.textSecondary),
                     ),
                   ],

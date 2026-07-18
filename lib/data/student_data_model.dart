@@ -1,8 +1,9 @@
 
 class StudentData {
-  StudentData(this.name, this.id);
+  StudentData({required this.name,required this.id , required this.cityName,this.present= false , this.homeworkDone =false});
   final String name;
   final String id;
-  bool present = true;
-  bool homeworkDone = true;
+  final String cityName;
+   bool present ;
+   bool homeworkDone = false ;
 }

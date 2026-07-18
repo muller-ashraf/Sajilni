@@ -1,30 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:sajilni/data/group_data_model.dart';
 import 'package:sajilni/screens/group_detailes_screen.dart';
 import 'package:sajilni/theme/app_colors.dart';
 import 'package:sajilni/widgets/glass_card.dart';
 
 class GroupCard extends StatelessWidget {
-  const GroupCard({
-    super.key,
-    required this.name,
-    required this.updated,
-    required this.students,
-    required this.attendance,
-    required this.homework,
-  });
+  const GroupCard({super.key, required this.group});
 
-  final String name;
-  final String updated;
-  final String students;
-  final String attendance;
-  final String homework;
+  final GroupData group;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const GroupDetailesScreen()),
+        MaterialPageRoute(
+          builder: (context) => GroupDetailesScreen(
+            groupName: group.groupName,
+            studentData: group.student,
+          ),
+        ),
       ),
       child: GlassCard(
         accentBorder: AppColors.primary,
@@ -36,7 +31,7 @@ class GroupCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  name,
+                  group.groupName,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -50,7 +45,9 @@ class GroupCard extends StatelessWidget {
                   onSelected: (value) async {
                     switch (value) {
                       case 'edit':
-                        final controller = TextEditingController(text: name);
+                        final controller = TextEditingController(
+                          text: group.groupName,
+                        );
 
                         final newName = await showDialog<String>(
                           context: context,
@@ -88,7 +85,6 @@ class GroupCard extends StatelessWidget {
                           print(newName);
                         }
 
-                        
                         break;
 
                       case 'delete':
@@ -143,35 +139,13 @@ class GroupCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  updated,
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 12,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                const Icon(
-                  Icons.calendar_today,
-                  size: 14,
-                  color: AppColors.textSecondary,
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
+
+            const SizedBox(height: 20),
             const Divider(color: AppColors.borderMuted, height: 1),
             const SizedBox(height: 12),
             Row(
               children: [
-                Expanded(child: _MetricCell(homework)),
-                _divider(),
-                Expanded(child: _MetricCell(attendance)),
-                _divider(),
-                Expanded(child: _MetricCell(students)),
+                Expanded(child: _MetricCell(group.student.length.toString())),
               ],
             ),
           ],
@@ -179,9 +153,6 @@ class GroupCard extends StatelessWidget {
       ),
     );
   }
-
-  Widget _divider() =>
-      Container(width: 1, height: 32, color: AppColors.borderMuted);
 }
 
 class _MetricCell extends StatelessWidget {
@@ -191,7 +162,7 @@ class _MetricCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      text,
+      " عدد الطلاب  $text",
       textAlign: TextAlign.center,
       style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
     );

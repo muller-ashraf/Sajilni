@@ -35,8 +35,11 @@ class StudentAttendanceCard extends StatelessWidget {
                   children: [
                     Text(
                       student.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                      ),
                       textAlign: TextAlign.right,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),

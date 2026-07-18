@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sajilni/data/group_data_model.dart';
 import 'package:sajilni/screens/main_shell.dart';
 import 'package:sajilni/theme/app_colors.dart';
 import 'package:sajilni/widgets/app_drawer.dart';
@@ -56,7 +57,7 @@ class HomeScreen extends StatelessWidget {
               color: AppColors.primary,
               icon: Icons.add_rounded,
               onPressed: () {
-                showDialogMethod(context);
+                showDialogMethod(context, title: 'اضافة مجموعة جديدة', content: 'ادخل اسم المجموعة');
               },
             ),
             const SizedBox(height: 24),
@@ -76,14 +77,10 @@ class HomeScreen extends StatelessWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               separatorBuilder: (context, index) => const SizedBox(height: 12),
-              itemCount: 5,
+              itemCount: groupsTest.length,
               itemBuilder: (context, index) {
                 return GroupCard(
-                  name: 'مجموعة مدرسة ${index + 1}',
-                  updated: 'تحديث منذ يوم',
-                  students: '32 طلاب',
-                  attendance: '95% الحضور',
-                  homework: '91% الواجبات',
+                 group: groupsTest[index],
                 );
               },
             ),

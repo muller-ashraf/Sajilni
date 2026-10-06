@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sajilni/data/group_data_model.dart';
+import 'package:sajilni/model/group_data_model.dart';
 import 'package:sajilni/screens/main_shell.dart';
 import 'package:sajilni/theme/app_colors.dart';
 import 'package:sajilni/widgets/app_drawer.dart';

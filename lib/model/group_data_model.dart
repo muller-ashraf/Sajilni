@@ -1,4 +1,4 @@
-import 'package:sajilni/data/student_data_model.dart';
+import 'package:sajilni/model/student_data_model.dart';
 
 class GroupData {
   final String groupName;

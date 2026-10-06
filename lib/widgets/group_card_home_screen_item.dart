@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sajilni/data/group_data_model.dart';
+import 'package:sajilni/model/groups_model.dart';
+import 'package:sajilni/model/student_model.dart';
+import 'package:sajilni/repositories/student_repository.dart';
 import 'package:sajilni/screens/group_detailes_screen.dart';
 import 'package:sajilni/theme/app_colors.dart';
 import 'package:sajilni/widgets/glass_card.dart';
@@ -7,20 +9,25 @@ import 'package:sajilni/widgets/glass_card.dart';
 class GroupCard extends StatelessWidget {
   const GroupCard({super.key, required this.group});
 
-  final GroupData group;
+  final GroupsModel group;
 
   @override
   Widget build(BuildContext context) {
+    final StudentRepository studentRepository = StudentRepository();
+     List<StudentModel> studentData =[];
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => GroupDetailesScreen(
-            groupName: group.groupName,
-            studentData: group.student,
+      onTap: () async{
+        studentData = await studentRepository.getStudentsByGroup(group.id);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GroupDetailesScreen(
+              groupName: group.name,
+              studentData: studentData,
+            ),
           ),
-        ),
-      ),
+        );
+      },
       child: GlassCard(
         accentBorder: AppColors.primary,
         accentWidth: 4,
@@ -31,7 +38,7 @@ class GroupCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  group.groupName,
+                  group.name,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -46,7 +53,7 @@ class GroupCard extends StatelessWidget {
                     switch (value) {
                       case 'edit':
                         final controller = TextEditingController(
-                          text: group.groupName,
+                          text: group.name,
                         );
 
                         final newName = await showDialog<String>(
@@ -145,7 +152,7 @@ class GroupCard extends StatelessWidget {
             const SizedBox(height: 12),
             Row(
               children: [
-                Expanded(child: _MetricCell(group.student.length.toString())),
+                Expanded(child: _MetricCell(studentData.length.toString())),
               ],
             ),
           ],

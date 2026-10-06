@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sajilni/data/student_data_model.dart';
+import 'package:sajilni/model/student_model.dart';
 import 'package:sajilni/theme/app_colors.dart';
 import 'package:sajilni/widgets/glass_card.dart';
-import 'package:sajilni/widgets/show_dialog_method.dart';
 
 class GroupDetailesScreen extends StatelessWidget {
   const GroupDetailesScreen({
@@ -10,7 +9,7 @@ class GroupDetailesScreen extends StatelessWidget {
     required this.studentData,
     required this.groupName,
   });
-  final List<StudentData> studentData;
+  final List<StudentModel> studentData;
   final String groupName;
   @override
   Widget build(BuildContext context) {
@@ -26,17 +25,17 @@ class GroupDetailesScreen extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primary,
-        child: const Icon(Icons.add),
-        onPressed: () {
-          showDialogMethod(
-            context,
-            title: 'اضافة طالب',
-            content: 'ادخل اسم الطالب',
-          );
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: AppColors.primary,
+      //   child: const Icon(Icons.add),
+      //   onPressed: () {
+      //     showDialogMethod(
+      //       context,
+      //       title: 'اضافة طالب',
+      //       content: 'ادخل اسم الطالب',
+      //     );
+      //   },
+      // ),
 
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -82,7 +81,7 @@ class GroupDetailesScreen extends StatelessWidget {
 
 class StudentInfo extends StatelessWidget {
   const StudentInfo({super.key, required this.studentData});
-  final StudentData studentData;
+  final StudentModel studentData;
   @override
   Widget build(BuildContext context) {
     return GlassCard(
@@ -127,7 +126,7 @@ class StudentInfo extends StatelessWidget {
                     ),
                     SizedBox(width: 4),
                     Text(
-                      studentData.id,
+                      studentData.id.toString(),
                       style: TextStyle(color: AppColors.textSecondary),
                     ),
                   ],
@@ -141,7 +140,7 @@ class StudentInfo extends StatelessWidget {
                     ),
                     SizedBox(width: 4),
                     Text(
-                      studentData.cityName,
+                      studentData.location?? "غير محدد",
                       style: TextStyle(color: AppColors.textSecondary),
                     ),
                   ],

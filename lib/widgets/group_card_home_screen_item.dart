@@ -1,31 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:sajilni/model/groups_model.dart';
+import 'package:sajilni/model/student_model.dart';
+import 'package:sajilni/repositories/student_repository.dart';
 import 'package:sajilni/screens/group_detailes_screen.dart';
 import 'package:sajilni/theme/app_colors.dart';
 import 'package:sajilni/widgets/glass_card.dart';
 
 class GroupCard extends StatelessWidget {
-  const GroupCard({
-    super.key,
-    required this.name,
-    required this.updated,
-    required this.students,
-    required this.attendance,
-    required this.homework,
-  });
+  const GroupCard({super.key, required this.group});
 
-  final String name;
-  final String updated;
-  final String students;
-  final String attendance;
-  final String homework;
+  final GroupsModel group;
 
   @override
   Widget build(BuildContext context) {
+    final StudentRepository studentRepository = StudentRepository();
+     List<StudentModel> studentData =[];
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const GroupDetailesScreen()),
-      ),
+      onTap: () async{
+        studentData = await studentRepository.getStudentsByGroup(group.id);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GroupDetailesScreen(
+              groupId: group.id,
+              groupName: group.name,
+              studentData: studentData,
+            ),
+          ),
+        );
+      },
       child: GlassCard(
         accentBorder: AppColors.primary,
         accentWidth: 4,
@@ -36,7 +39,7 @@ class GroupCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  name,
+                  group.name,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -50,7 +53,9 @@ class GroupCard extends StatelessWidget {
                   onSelected: (value) async {
                     switch (value) {
                       case 'edit':
-                        final controller = TextEditingController(text: name);
+                        final controller = TextEditingController(
+                          text: group.name,
+                        );
 
                         final newName = await showDialog<String>(
                           context: context,
@@ -88,7 +93,6 @@ class GroupCard extends StatelessWidget {
                           print(newName);
                         }
 
-                        
                         break;
 
                       case 'delete':
@@ -143,35 +147,13 @@ class GroupCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  updated,
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 12,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                const Icon(
-                  Icons.calendar_today,
-                  size: 14,
-                  color: AppColors.textSecondary,
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
+
+            const SizedBox(height: 20),
             const Divider(color: AppColors.borderMuted, height: 1),
             const SizedBox(height: 12),
             Row(
               children: [
-                Expanded(child: _MetricCell(homework)),
-                _divider(),
-                Expanded(child: _MetricCell(attendance)),
-                _divider(),
-                Expanded(child: _MetricCell(students)),
+                Expanded(child: _MetricCell(studentData.length.toString())),
               ],
             ),
           ],
@@ -179,9 +161,6 @@ class GroupCard extends StatelessWidget {
       ),
     );
   }
-
-  Widget _divider() =>
-      Container(width: 1, height: 32, color: AppColors.borderMuted);
 }
 
 class _MetricCell extends StatelessWidget {
@@ -191,7 +170,7 @@ class _MetricCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      text,
+      " عدد الطلاب  $text",
       textAlign: TextAlign.center,
       style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
     );

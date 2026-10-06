@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sajilni/data/student_data_model.dart';
+import 'package:sajilni/model/student_data_model.dart';
 import 'package:sajilni/theme/app_colors.dart';
 import 'package:sajilni/widgets/glass_card.dart';
 import 'package:sajilni/widgets/toggle_chip.dart';
@@ -35,8 +35,11 @@ class StudentAttendanceCard extends StatelessWidget {
                   children: [
                     Text(
                       student.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                      ),
                       textAlign: TextAlign.right,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),

@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:sajilni/repositories/group_repository.dart';
 import 'package:sajilni/screens/main_shell.dart';
 import 'package:sajilni/theme/app_colors.dart';
 import 'package:sajilni/widgets/app_drawer.dart';
 import 'package:sajilni/widgets/group_card_home_screen_item.dart';
 import 'package:sajilni/widgets/primary_buttom.dart';
 import 'package:sajilni/widgets/show_dialog_method.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final supabase = Supabase.instance.client;
+    final groupNameController = TextEditingController();
+    final repository = GroupRepository(supabase);
     return ScreenScaffold(
       title: 'Muller Sajilni',
       drawerStyle: DrawerStyle.dashboard,
@@ -56,7 +61,31 @@ class HomeScreen extends StatelessWidget {
               color: AppColors.primary,
               icon: Icons.add_rounded,
               onPressed: () {
-                showDialogMethod(context);
+                showDialogMethod(
+                  context,
+                  title: 'إضافة مجموعة جديدة',
+                  
+                 fields: [
+                    TextField(
+                      controller: groupNameController,
+                      decoration: const InputDecoration(hintText: 'اسم المجموعة'),
+                    ),
+                  ],
+
+                  onPressed: () async {
+                    if (groupNameController.text.trim().isEmpty) {
+                      return;
+                    }
+
+                    await supabase.from('groups').insert({
+                      'name': groupNameController.text.trim(),
+                    });
+
+                    Navigator.pop(context);
+
+                    groupNameController.clear();
+                  },
+                );
               },
             ),
             const SizedBox(height: 24),
@@ -72,25 +101,39 @@ class HomeScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: 12),
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              separatorBuilder: (context, index) => const SizedBox(height: 12),
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return GroupCard(
-                  name: 'مجموعة مدرسة ${index + 1}',
-                  updated: 'تحديث منذ يوم',
-                  students: '32 طلاب',
-                  attendance: '95% الحضور',
-                  homework: '91% الواجبات',
-                );
-              },
-            ),
+           FutureBuilder(
+  future: repository.getGroups(),
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (snapshot.hasError) {
+      return Text('Error: ${snapshot.error}');
+    }
+
+    final groups = snapshot.data ?? [];
+
+    if (groups.isEmpty) {
+      return const Text('لا توجد مجموعات حتى الآن');
+    }
+
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      separatorBuilder: (context, index) => const SizedBox(height: 12),
+      itemCount: groups.length,
+      itemBuilder: (context, index) {
+        return GroupCard(group: groups[index]);
+      },
+    );
+  },
+),
           ],
         ),
       ),
     );
   }
-
 }

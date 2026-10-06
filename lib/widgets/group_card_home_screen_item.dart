@@ -22,6 +22,7 @@ class GroupCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => GroupDetailesScreen(
+              groupId: group.id,
               groupName: group.name,
               studentData: studentData,
             ),

@@ -27,7 +27,7 @@ class StudentRepository {
   }) async {
     await supabase.from('students').insert({
       'name': name,
-      'mobile': mobile,
+      'phone': mobile,
       'location': location,
       'group_id': groupId,
     });

@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:sajilni/model/student_model.dart';
+import 'package:sajilni/repositories/student_repository.dart';
 import 'package:sajilni/theme/app_colors.dart';
 import 'package:sajilni/widgets/glass_card.dart';
+import 'package:sajilni/widgets/show_dialog_method.dart';
 
 class GroupDetailesScreen extends StatelessWidget {
-  const GroupDetailesScreen({
+  GroupDetailesScreen({
     super.key,
     required this.studentData,
     required this.groupName,
+    required this.groupId,
   });
+
   final List<StudentModel> studentData;
   final String groupName;
+  final int groupId;
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController mobileController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,55 +34,90 @@ class GroupDetailesScreen extends StatelessWidget {
           ),
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: AppColors.primary,
-      //   child: const Icon(Icons.add),
-      //   onPressed: () {
-      //     showDialogMethod(
-      //       context,
-      //       title: 'اضافة طالب',
-      //       content: 'ادخل اسم الطالب',
-      //     );
-      //   },
-      // ),
 
-      body: Padding(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: AppColors.primary,
+        child: const Icon(Icons.add),
+        onPressed: () {
+          showDialogMethod(
+            context,
+            title: 'إضافة طالب',
+            
+            fields: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(hintText: 'اسم الطالب'),
+              ),
+
+              TextField(
+                controller: mobileController,
+                decoration: const InputDecoration(hintText: 'رقم الهاتف'),
+              ),
+
+              TextField(
+                controller: locationController,
+                decoration: const InputDecoration(hintText: 'المكان'),
+              ),
+            ],
+            onPressed: () async {
+              await StudentRepository().addStudent(
+                groupId: groupId,
+                name: nameController.text,
+                mobile: mobileController.text,
+                location: locationController.text,
+              );
+
+              Navigator.pop(context);
+            },
+          );
+        },
+      ),
+      body: ListView(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          spacing: 12,
-          children: [
-            const SizedBox(height: 12),
-            Column(
-              children: [
-                Text(
-                  "الطلاب الموجودين في",
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+        children: [
+          const SizedBox(height: 12),
+
+          Column(
+            children: [
+              const Text(
+                "الطلاب الموجودين في",
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
-                Text(
-                  groupName,
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+              ),
+              Text(
+                groupName,
+                style: const TextStyle(
+                  color: AppColors.primary,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 12),
+          if (studentData.isEmpty)
+            const Center(
+              child: Text(
+                'لا يوجد طلاب في هذه المجموعة',
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              separatorBuilder: (context, index) => const SizedBox(height: 12),
-              itemCount: studentData.length,
-              itemBuilder: (context, index) {
-                return StudentInfo(studentData: studentData[index]);
-              },
+
+          ...studentData.map(
+            (student) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: StudentInfo(studentData: student),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -81,7 +125,9 @@ class GroupDetailesScreen extends StatelessWidget {
 
 class StudentInfo extends StatelessWidget {
   const StudentInfo({super.key, required this.studentData});
+
   final StudentModel studentData;
+
   @override
   Widget build(BuildContext context) {
     return GlassCard(
@@ -108,40 +154,47 @@ class StudentInfo extends StatelessWidget {
               ),
             ],
           ),
+
           const SizedBox(width: 16),
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   studentData.name,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+
                 Row(
                   children: [
-                    Icon(
-                      Icons.fingerprint,
+                    const Icon(
+                      Icons.phone_android_outlined,
                       size: 14,
                       color: AppColors.textSecondary,
                     ),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 4),
                     Text(
-                      studentData.id.toString(),
-                      style: TextStyle(color: AppColors.textSecondary),
+                      studentData.mobile?.toString() ?? "غير محدد",
+                      style: const TextStyle(color: AppColors.textSecondary),
                     ),
                   ],
                 ),
+
                 Row(
                   children: [
-                    Icon(
-                      Icons.school_outlined,
+                    const Icon(
+                      Icons.location_on_outlined,
                       size: 14,
                       color: AppColors.textSecondary,
                     ),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 4),
                     Text(
-                      studentData.location?? "غير محدد",
-                      style: TextStyle(color: AppColors.textSecondary),
+                      studentData.location ?? "غير محدد",
+                      style: const TextStyle(color: AppColors.textSecondary),
                     ),
                   ],
                 ),

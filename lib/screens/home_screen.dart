@@ -64,8 +64,13 @@ class HomeScreen extends StatelessWidget {
                 showDialogMethod(
                   context,
                   title: 'إضافة مجموعة جديدة',
-                  content: 'ادخل اسم المجموعة',
-                  controller: groupNameController,
+                  
+                 fields: [
+                    TextField(
+                      controller: groupNameController,
+                      decoration: const InputDecoration(hintText: 'اسم المجموعة'),
+                    ),
+                  ],
 
                   onPressed: () async {
                     if (groupNameController.text.trim().isEmpty) {

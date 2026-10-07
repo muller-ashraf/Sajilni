@@ -42,7 +42,7 @@ class GroupDetailesScreen extends StatelessWidget {
           showDialogMethod(
             context,
             title: 'إضافة طالب',
-            
+
             fields: [
               TextField(
                 controller: nameController,
@@ -79,18 +79,19 @@ class GroupDetailesScreen extends StatelessWidget {
 
           Column(
             children: [
-              const Text(
-                "الطلاب الموجودين في",
-                style: TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
               Text(
                 groupName,
                 style: const TextStyle(
                   color: AppColors.primary,
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              Text(
+                'العدد : ${studentData.length}',
+                style: TextStyle(
+                  color: AppColors.textSecondary,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),

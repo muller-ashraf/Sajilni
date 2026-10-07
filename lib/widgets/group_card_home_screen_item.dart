@@ -14,9 +14,9 @@ class GroupCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final StudentRepository studentRepository = StudentRepository();
-     List<StudentModel> studentData =[];
+    List<StudentModel> studentData;
     return GestureDetector(
-      onTap: () async{
+      onTap: () async {
         studentData = await studentRepository.getStudentsByGroup(group.id);
         Navigator.push(
           context,
@@ -149,30 +149,9 @@ class GroupCard extends StatelessWidget {
             ),
 
             const SizedBox(height: 20),
-            const Divider(color: AppColors.borderMuted, height: 1),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(child: _MetricCell(studentData.length.toString())),
-              ],
-            ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _MetricCell extends StatelessWidget {
-  const _MetricCell(this.text);
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      " عدد الطلاب  $text",
-      textAlign: TextAlign.center,
-      style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
     );
   }
 }

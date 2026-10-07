@@ -64,11 +64,13 @@ class HomeScreen extends StatelessWidget {
                 showDialogMethod(
                   context,
                   title: 'إضافة مجموعة جديدة',
-                  
-                 fields: [
+
+                  fields: [
                     TextField(
                       controller: groupNameController,
-                      decoration: const InputDecoration(hintText: 'اسم المجموعة'),
+                      decoration: const InputDecoration(
+                        hintText: 'اسم المجموعة',
+                      ),
                     ),
                   ],
 
@@ -101,36 +103,35 @@ class HomeScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: 12),
-           FutureBuilder(
-  future: repository.getGroups(),
-  builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
+            FutureBuilder(
+              future: repository.getGroups(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-    if (snapshot.hasError) {
-      return Text('Error: ${snapshot.error}');
-    }
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
 
-    final groups = snapshot.data ?? [];
+                final groups = snapshot.data ?? [];
 
-    if (groups.isEmpty) {
-      return const Text('لا توجد مجموعات حتى الآن');
-    }
+                if (groups.isEmpty) {
+                  return const Text('لا توجد مجموعات حتى الآن');
+                }
 
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      separatorBuilder: (context, index) => const SizedBox(height: 12),
-      itemCount: groups.length,
-      itemBuilder: (context, index) {
-        return GroupCard(group: groups[index]);
-      },
-    );
-  },
-),
+                return ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 12),
+                  itemCount: groups.length,
+                  itemBuilder: (context, index) {
+                    return GroupCard(group: groups[index]);
+                  },
+                );
+              },
+            ),
           ],
         ),
       ),
